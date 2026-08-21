@@ -1,0 +1,44 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build .app
+        run: ./app/build-app.sh
+
+      - name: Verify bundle structure
+        run: |
+          set -euo pipefail
+          test -x "dist/IsolatedBrowser.app/Contents/MacOS/IsolatedBrowser"
+          test -f "dist/IsolatedBrowser.app/Contents/Info.plist"
+          test -f "dist/IsolatedBrowser.app/Contents/Resources/icon.icns"
+          plutil -lint "dist/IsolatedBrowser.app/Contents/Info.plist"
+          codesign --verify --deep --strict "dist/IsolatedBrowser.app"
+          echo "bundle OK"
+
+      - name: Package .dmg
+        run: ./app/build-dmg.sh
+
+      - name: Upload app bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: IsolatedBrowser-app
+          path: dist/IsolatedBrowser.app
+
+      - name: Upload dmg
+        uses: actions/upload-artifact@v4
+        with:
+          name: IsolatedBrowser-dmg
+          path: dist/IsolatedBrowser.dmg
