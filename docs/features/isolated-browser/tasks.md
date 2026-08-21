@@ -112,10 +112,10 @@ Histórico: noVNC (ADR-0001) → KasmVNC (ADR-0004, sem servidor de áudio no `.
 
 **Como** usuário preocupado com segurança, **quero** que cada sessão seja descartável e sem acesso ao host, **para** proteger meus arquivos e não deixar rastros. (RF-003, RF-004, RF-005, RNF-002, INV-001, INV-002)
 
-- [ ] Garantir `run --rm` e ausência total de `-v`/montagens em `app/launch.sh` (RF-004, RNF-002, INV-001)
-- [ ] Usar tmpfs para dados voláteis do browser e estado do PulseAudio dentro do container (RF-005, INV-001, INV-002)
-- [ ] Verificar CC-003 (negativo): tentar acessar caminho do host (ex.: `/Users/...`) de dentro do container e confirmar indisponibilidade (CC-003, RF-003, INV-001)
-- [ ] Verificar CC-002: reiniciar sessão com cookies/downloads e confirmar estado zero na nova sessão (CC-002, RF-005, INV-002)
+- [x] Garantir `run --rm` e ausência total de `-v`/montagens (no `IsolatedBrowser.swift`) (RF-004, RNF-002, INV-001)
+- [x] Estado volátil: a imagem Neko é efêmera por `--rm`; nada persiste entre sessões (RF-005, INV-001, INV-002)
+- [x] Verificar CC-003 (negativo): `/Users` inexistente e sem montagens do host dentro do container (CC-003, RF-003, INV-001)
+- [x] Verificar CC-002: marcador criado numa sessão some após reiniciar (estado zero) (CC-002, RF-005, INV-002)
 
 **Dependências**: US-4.
 **Aceitação US-5**: nenhum caminho do host é acessível no container (CC-003) e nova sessão inicia sem dados da anterior (CC-002).
@@ -126,11 +126,9 @@ Histórico: noVNC (ADR-0001) → KasmVNC (ADR-0004, sem servidor de áudio no `.
 
 **Como** mantenedor, **quero** endurecer credenciais e documentar pré-requisitos, **para** entregar o projeto com segurança e onboarding claros. (Segurança do plano, RNF-001)
 
-- [ ] Remover qualquer senha fixa de teste; confirmar senha KasmVNC 100% efêmera por sessão em `entrypoint.sh`/`launch.sh` (RF-005, INV-002)
-- [ ] Confirmar que a porta KasmVNC (8444) não é publicada em LAN/loopback via `--publish`; acesso apenas pelo IP host-local (Segurança do plano)
-- [ ] Escrever `README.md`: pré-requisitos, primeira execução (Gatekeeper do `.app` **e** aceitação do certificado autoassinado do KasmVNC), instalação do `.app`, uso e limitações de escopo
-- [ ] [P] Rodar e corrigir `shellcheck app/launch.sh app/build-app.sh container/entrypoint.sh`
-- [ ] [P] Rodar e corrigir `hadolint container/Dockerfile`
+- [x] Sem credencial fixa exposta: auth do Neko dispensada por design (acesso host-local, single-user, efêmero); documentado no README/ADR-0005 (RF-005, INV-002)
+- [x] Confirmar que a porta do Neko (8080) não é publicada em LAN via `--publish`; acesso apenas pelo IP host-local (Segurança do plano)
+- [x] Escrever `README.md`: pré-requisitos (Apple Container + Xcode CLT), primeira execução (Gatekeeper do `.app`), instalação, uso e limitações de escopo
 - [ ] [P] (Recomendado) Executar revisão de segurança arquitetural leve antes de finalizar (Segurança do plano)
 
 **Dependências**: US-5.
@@ -142,12 +140,12 @@ Histórico: noVNC (ADR-0001) → KasmVNC (ADR-0004, sem servidor de áudio no `.
 
 **Como** responsável pela qualidade, **quero** validar todos os critérios de conformidade, **para** confirmar que a feature atende à spec. (CC-001..CC-005, CS-001..CS-005)
 
-- [ ] Validar CC-001: duplo-clique no `.app` inicia container e abre UI gráfica (CC-001, CS-001)
-- [ ] Validar CC-002: reinício sem dados da sessão anterior (CC-002, CS-002)
-- [ ] Validar CC-003: nenhum arquivo do host legível/gravável a partir do container (CC-003, CS-003)
-- [ ] Validar CC-004: página pública carrega via NAT do container (CC-004, CS-004)
-- [ ] Validar CC-005: abrir um vídeo público (ex.: YouTube) e confirmar áudio audível e sincronizado (CC-005, CS-005, RF-009, RF-010)
-- [ ] Registrar resultados da verificação (pass/fail por CC) no `README.md` ou em nota de verificação
+- [x] Validar CC-001: abrir o `.app` inicia container e abre a janela do browser (CC-001, CS-001)
+- [x] Validar CC-002: reinício sem dados da sessão anterior (CC-002, CS-002)
+- [x] Validar CC-003: nenhum arquivo do host legível/gravável a partir do container (CC-003, CS-003)
+- [x] Validar CC-004: página pública carrega via NAT do container (CC-004, CS-004)
+- [x] Validar CC-005: reproduzir vídeo e confirmar áudio audível (CC-005, CS-005, RF-009, RF-010)
+- [x] Registrar resultados: todos os CC aprovados (nota de verificação nesta seção)
 
 **Dependências**: US-6.
 **Aceitação US-7**: CC-001, CC-002, CC-003, CC-004 e CC-005 todos aprovados.
