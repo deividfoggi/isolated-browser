@@ -1,6 +1,12 @@
 # Isolated Browser
 
+[![build](https://github.com/deividfoggi/isolated-browser/actions/workflows/build.yml/badge.svg)](https://github.com/deividfoggi/isolated-browser/actions/workflows/build.yml)
+
 Um browser **isolado e descartável** que roda dentro de um [Apple Container](https://github.com/apple/container) e é acessado por um app nativo no macOS. A navegação acontece inteiramente dentro do container (imagem [Neko](https://github.com/m1k1o/neko), streaming por WebRTC com **vídeo e áudio**), sem tocar no sistema de arquivos do host. Cada sessão é **efêmera**: ao fechar a janela, o container é destruído e nada persiste.
+
+## Download
+
+Baixe o `.dmg` mais recente na página de [**Releases**](https://github.com/deividfoggi/isolated-browser/releases/latest), arraste o app para **Aplicativos** e siga a nota de [primeira execução](#primeira-execução-gatekeeper). Ainda são necessários o [Apple Container CLI](https://github.com/apple/container) e `make pull` (ou o primeiro boot baixa a imagem do Neko).
 
 ## Por que
 
